@@ -1,5 +1,7 @@
 import { Devvit } from '@devvit/public-api';
 
+const categories = ['huge', 'round', 'skinny', 'face', 'ass', 'trans'];
+
 Devvit.configure({
   redditAPI: true,
 });
@@ -23,43 +25,25 @@ Devvit.addMenuItem({
 
     for (const post of posts) {
       counter++;
-      if (post.flair?.text?.toLocaleLowerCase().includes('huge')) {
-        await reddit.setPostFlair({
-          subredditName: subreddit.name,
-          postId: post.id,
-          ...flairs.find(f => f.text.toLocaleLowerCase().includes('huge'))
-        }) 
-      } else if (post.flair?.text?.toLocaleLowerCase().includes('round')) {
-        await reddit.setPostFlair({
-          subredditName: subreddit.name,
-          postId: post.id,
-          ...flairs.find(f => f.text.toLocaleLowerCase().includes('round'))
-        })
-      } else if(post.flair?.text?.toLocaleLowerCase().includes('skinny')) {
-        await reddit.setPostFlair({
-          subredditName: subreddit.name,
-          postId: post.id,
-          ...flairs.find(f => f.text.toLocaleLowerCase().includes('skinny'))
-        })
-      } else if(post.flair?.text?.toLocaleLowerCase().includes('face')) {
-        await reddit.setPostFlair({
-          subredditName: subreddit.name,
-          postId: post.id,
-          ...flairs.find(f => f.text.toLocaleLowerCase().includes('face'))
-        })
-      } else if(post.flair?.text?.toLocaleLowerCase().includes('ass')) {
-        await reddit.setPostFlair({
-          subredditName: subreddit.name,
-          postId: post.id,
-          ...flairs.find(f => f.text.toLocaleLowerCase().includes('ass'))
-        })
-      } else if(post.flair?.text?.toLocaleLowerCase().includes('trans')) {
-        await reddit.setPostFlair({
-          subredditName: subreddit.name,
-          postId: post.id,
-          ...flairs.find(f => f.text.toLocaleLowerCase().includes('trans'))
-        })
-      } else {
+
+      for (const category of categories) {
+        const postFlair = post.flair?.text?.toLocaleLowerCase().includes(category) && post.flair;
+        const subredditFlair = flairs.find(f => f.text.toLocaleLowerCase().includes(category));
+        if (postFlair && subredditFlair && postFlair.text !== subredditFlair.text) {
+          await reddit.setPostFlair({
+            subredditName: subreddit.name,
+            postId: post.id,
+            flairTemplateId: subredditFlair.id,
+            text: subredditFlair.text,
+            cssClass: postFlair.cssClass,
+            backgroundColor: subredditFlair.backgroundColor,
+            textColor: subredditFlair.textColor,
+          });
+          break;
+        }
+      }
+
+      if(!!post.flair) {
         counter--;
       }
     }
