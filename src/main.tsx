@@ -24,8 +24,6 @@ Devvit.addMenuItem({
     const flairs = await subreddit.getPostFlairTemplates();
 
     for (const post of posts) {
-      counter++;
-
       for (const category of categories) {
         const postFlair = post.flair?.text?.toLocaleLowerCase().includes(category) && post.flair;
         const subredditFlair = flairs.find(f => f.text.toLocaleLowerCase().includes(category));
@@ -42,10 +40,6 @@ Devvit.addMenuItem({
           counter++;
           break;
         }
-      }
-
-      if(!post.flair) {
-        counter--;
       }
     }
 
