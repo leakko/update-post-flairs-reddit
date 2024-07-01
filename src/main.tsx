@@ -39,11 +39,12 @@ Devvit.addMenuItem({
             backgroundColor: subredditFlair.backgroundColor,
             textColor: subredditFlair.textColor,
           });
+          counter++;
           break;
         }
       }
 
-      if(!!post.flair) {
+      if(!post.flair) {
         counter--;
       }
     }
